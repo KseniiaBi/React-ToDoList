@@ -1,19 +1,38 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
+import {Textbox, Btn, List }from './Components';
+
 
 class App extends Component {
+
+  constructor(props){
+    super(props);
+
+    this.onSaveTask = this.onSaveTask.bind(this);
+    this.state = {
+      isEmpty: true,
+      newtask: '',
+      tasks: [ ]
+    }
+  }
+
+  onSaveTask(){
+    this.setState({
+      tasks: [...this.state.tasks, this.state.newtask],
+      newtask: ' ' 
+    });
+  }
+
+
+
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
-      </div>
+        <div className="wrapper">
+          <h1 className="App-title">To Do List</h1>
+          <Textbox />
+          <input type="submit" value="Save" onClick={this.onSaveTask} />
+          <List tasks={this.state.tasks}  />
+        </div>
     );
   }
 }
