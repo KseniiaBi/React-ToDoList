@@ -17,6 +17,7 @@ class App extends Component {
   }
 
   onSaveTask(){
+    console.log(this.state.newtask);
     this.setState({
       tasks: [...this.state.tasks, this.state.newtask],
       newtask: ' ' 
@@ -24,13 +25,12 @@ class App extends Component {
   }
 
 
-
   render() {
     return (
         <div className="wrapper">
           <h1 className="App-title">To Do List</h1>
-          <Textbox />
-          <input type="submit" value="Save" onClick={this.onSaveTask} />
+          <Textbox onTextAdded = {this.props.onTypeText} value={this.state.newtask} />
+          <Btn onButtonClicked={this.onSaveTask} />
           <List tasks={this.state.tasks}  />
         </div>
     );

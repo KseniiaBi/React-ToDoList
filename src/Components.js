@@ -13,14 +13,13 @@ export class Textbox extends Component{
     }
 
   onTypeText = (event) => {
-    console.log('text input');
     this.setState({ 
         content: event.target.value 
     });
   }
     render(){
     return(
-        <input id="tbox" type="text" value={this.state.content} onChange={this.onTypeText} placeholder="Type your task here"  />
+        <input type="text" value={this.state.content} onChange={this.onTypeText} placeholder="Type your task here"  />
     );
     }
 }
@@ -28,7 +27,7 @@ export class Textbox extends Component{
 export class Btn extends Component{
     render(){
         return(
-            <button>
+            <button onClick={this.props.onButtonClicked}>
             Save
             </button>
         );
