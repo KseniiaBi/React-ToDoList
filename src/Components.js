@@ -2,24 +2,12 @@ import React, { Component } from 'react';
 
 
 
-export class Textbox extends Component{
+ export class Textbox extends Component{
 
-    constructor(props){
-        super(props);
-        this.onTypeText = this.onTypeText.bind(this);
-        this.state={
-            content: ''
-        }
-    }
-
-  onTypeText = (event) => {
-    this.setState({ 
-        content: event.target.value 
-    });
-  }
     render(){
     return(
-        <input type="text" value={this.state.content} onChange={this.onTypeText} placeholder="Type your task here"  />
+
+        <input id="txt" type="text" value={this.props.newtask} onChange={this.props.onTextAdded} placeholder="Type your task here"  />
     );
     }
 }
@@ -27,7 +15,7 @@ export class Textbox extends Component{
 export class Btn extends Component{
     render(){
         return(
-            <button onClick={this.props.onButtonClicked}>
+            <button className="btn" onClick={this.props.onButtonClicked}>
             Save
             </button>
         );
@@ -37,9 +25,9 @@ export class Btn extends Component{
 
 export const List = props => (
 
-    <ul>
+    <ol>
     {
-        props.tasks.map((task, index) => <li key={index}>{task}</li>) 
+        props.tasks.length > 0 ? props.tasks.map((task, index) => <li key={index}>{task}</li>) : <div align="center"> Any tasks yet. Type your first in input above. </div>
     }
-    </ul>
+    </ol>
 )

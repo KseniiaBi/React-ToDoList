@@ -9,6 +9,7 @@ class App extends Component {
     super(props);
 
     this.onSaveTask = this.onSaveTask.bind(this);
+    this.onTypeText = this.onTypeText.bind(this);
     this.state = {
       isEmpty: true,
       newtask: '',
@@ -22,6 +23,14 @@ class App extends Component {
       tasks: [...this.state.tasks, this.state.newtask],
       newtask: ' ' 
     });
+    document.getElementById('txt').value = '';
+  }
+
+
+  onTypeText = (event) => {
+    this.setState({ 
+        newtask: event.target.value 
+    });
   }
 
 
@@ -29,7 +38,7 @@ class App extends Component {
     return (
         <div className="wrapper">
           <h1 className="App-title">To Do List</h1>
-          <Textbox onTextAdded = {this.props.onTypeText} value={this.state.newtask} />
+          <Textbox onTextAdded = {this.onTypeText} value={this.state.newtask} />
           <Btn onButtonClicked={this.onSaveTask} />
           <List tasks={this.state.tasks}  />
         </div>
