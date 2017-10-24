@@ -4,10 +4,12 @@ import React, { Component } from 'react';
 
  export class Textbox extends Component{
 
+
+
     render(){
     return(
 
-        <input id="txt" type="text" value={this.props.newtask} onChange={this.props.onTextAdded} placeholder="Type your task here"  />
+        <input type="text" value={this.props.newtask} onChange={this.props.onTextAdded} placeholder="Type your task here" ref={this.props.inputRef} />
     );
     }
 }
@@ -23,7 +25,7 @@ export class Btn extends Component{
 }
 
 
-export const List = props => (
+export const Tasklist = props => (
 
     <ol>
     {
