@@ -77,16 +77,28 @@ class CategoryManager extends Component{
 
   onSaveCat(id){
     const newCount = this.state.elCount+ 1;
-    this.setState({
-      categories: [...this.state.categories, {
+    let list = this.state.categories;
+
+    if(id !== 0){
+      for(let i=0;i<list.length; i++){
+        if(list[i].id === id){
+          list[i].children.push(newCount);
+        }
+      }
+    }
+    const newcat = {
         parent: id,
         id: newCount,
         name: this.catInput.value,
         children: [],
         tasks: []
-      }],
+      };
+    list.push(newcat);
+    this.setState({
+      categories: list,
       elCount: newCount
     });
+
     this.catInput.value = '';
     this.catInput.focus();
   }
@@ -117,7 +129,7 @@ class CategoryManager extends Component{
       <div className="categories">
         <Textbox onTextAdded = {this.onTypeText} value={this.state.newcat} inputRef={(input) => { this.catInput = input; }} />
         <Btn onButtonClicked={()=>this.onSaveCat(0)} />
-        <CategoryList parent={0} list={ this.state.categories } onCatDelete={  this.onCatDelete } onSubcatAdd={this.onSubcatAdd}/>
+        <CategoryList parent={0} list={ this.state.categories } onCatDelete={ this.onCatDelete } onSaveCat={this.onSaveCat}/>
       </div>
     );
   }
@@ -141,24 +153,45 @@ const CategoryList = ({list, parent, onCatDelete, onSaveCat}) => (
 
 
 const Category = (props) => (
-
-        <li key={props.id}>
-        {props.name}
-        <span className="controls"> 
-
-          <i className="fa fa-plus" aria-hidden="true" onClick={()=> props.onSaveCat(props.id)}></i>
-          <i className="fa fa-pencil" aria-hidden="true"></i>
-          <i className="fa fa-trash-o" aria-hidden="true" onClick={ () => props.onCatDelete(props.id)} ></i>
-
-        </span> 
-        {
-          props.children.length > 0 &&
-          <CategoryList parent={props.id} list={ props.list} onCatDelete={() => props.onCatDelete(props.id) } onSubcatAdd={() =>props.onSaveCat(props.id)}/>
-        }
-       
-      </li>
-      
-  );
+  
+          <li key={props.id}>
+          {props.name}
+          <span className="controls"> 
+  
+            <i className="fa fa-plus" aria-hidden="true" onClick={()=> props.onSaveCat(props.id)}></i>
+            <i className="fa fa-pencil" aria-hidden="true"></i>
+            <i className="fa fa-trash-o" aria-hidden="true" onClick={ () => props.onCatDelete(props.id)} ></i>
+  
+          </span> 
+          {
+            props.children.length > 0 &&
+            <CategoryList parent={props.id} list={ props.list} onCatDelete={() => props.onCatDelete(props.id) } onSaveCat={() =>props.onSaveCat(props.id)}/>
+          }
+         
+        </li>
+        
+    );
+    
+    
+    // const Category = ({list, onSaveCat, onCatDelete}) => (
+    
+    //         <li key={list.id}>
+    //         {list.name}
+    //         <span className="controls"> 
+    
+    //           <i className="fa fa-plus" aria-hidden="true" onClick={()=> onSaveCat(list.id)}></i>
+    //           <i className="fa fa-pencil" aria-hidden="true"></i>
+    //           <i className="fa fa-trash-o" aria-hidden="true" onClick={ () => onCatDelete(list.id)} ></i>
+    
+    //         </span> 
+    //         {
+    //           list.children.length > 0 &&
+    //           <CategoryList parent={list.id} list={ list} onCatDelete={() => onCatDelete(list.id) } onSaveCat={() =>onSaveCat(list.id)}/>
+    //         }
+           
+    //       </li>
+          
+    //   );
 
 
 export default App;
