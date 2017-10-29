@@ -67,20 +67,19 @@ class CategoryManager extends Component{
     this.onSaveCat = this.onSaveCat.bind(this);
     this.onCatDelete = this.onCatDelete.bind(this);
     this.onCatEdit = this.onCatEdit.bind(this);
-    this.onSubcatAdd = this.onSubcatAdd.bind(this);
     this.onTypeText = this.onTypeText.bind(this);
 
     this.state = {
       categories: [],
-      elCount: 0
+      elCount: 0,
     }
   }
 
   onSaveCat(id){
-    const newCount = this.state.elCount + 1;
+    const newCount = this.state.elCount+ 1;
     this.setState({
       categories: [...this.state.categories, {
-        parent: undefined,
+        parent: id,
         id: newCount,
         name: this.catInput.value,
         children: [],
@@ -108,138 +107,58 @@ class CategoryManager extends Component{
 
   }
 
-  onSubcatAdd(index, subcatName){
-    const newCount = this.state.elCount + 1;
-    const list = this.state.categories.slice();
-
-    let parentId;
-
-    for(let i=0;i<list.length;i++){
-      if(list[i].id === index){
-        parentId = i;
-      }
-    }
-    
-    const newCat = {
-      parent: list[parentId].id,
-      id: newCount,
-      name: subcatName,
-      children: [],
-      tasks: []
-    }
-    list[parentId].children.push(newCat);
-    this.setState({
-      categories: list,
-      elCount: newCount
-    });
-  }
 
   onTypeText() {
-    // this.setState({ 
-    //     newcat: {
-    //       name: this.catInput.value
-    //     } 
-    // });
+
   }
 
   render() {
     return(
       <div className="categories">
         <Textbox onTextAdded = {this.onTypeText} value={this.state.newcat} inputRef={(input) => { this.catInput = input; }} />
-        <Btn onButtonClicked={this.onSaveCat} />
-        <CategoryList list={ this.state.categories } onCatDelete={  this.onCatDelete } onSubcatAdd={this.onSubcatAdd}/>
+        <Btn onButtonClicked={()=>this.onSaveCat(0)} />
+        <CategoryList parent={0} list={ this.state.categories } onCatDelete={  this.onCatDelete } onSubcatAdd={this.onSubcatAdd}/>
       </div>
     );
   }
 }
 
-const CategoryList = ({list, onCatDelete, onSubcatAdd}) => (
+const CategoryList = ({list, parent, onCatDelete, onSaveCat}) => (
 
     <ol className='catlist'>
         {
-         list.map(data => <Category key={ data.id } { ...data } onCatDelete={() =>onCatDelete(data.id) } onSubcatAdd={() =>onSubcatAdd(data.id) } />)
+          //list.map(data => <Category key={ data.id } { ...data } onCatDelete={() => onCatDelete(data.id) } onSaveCat={() => onSaveCat(data.id) } />)
+          list.map(function(list, parent){
+            if(list.parent == 0){
+              return <Category key={ list.id } { ...list } onCatDelete={() => onCatDelete(list.id) } onSaveCat={() => onSaveCat(list.id) } />
+            }
+            return false;
+          })
         }
     </ol>
 );
 
-class Category extends Component{
-  constructor(props){
-    super(props);
 
-    this.onEditTurnedOn = this.onEditTurnedOn.bind(this);
-    this.onEditTurnedOff = this.onEditTurnedOff.bind(this);
 
-    this.state = {
-      isEditing: false
-    }
-  }
+const Category = (props) => (
 
-  onEditTurnedOn(){
-    this.setState({
-      isEditing: true
-    });
-  }
-  onEditTurnedOff( id){
-    this.setState({
-      isEditing: false
-    });
-    const subcatName = this.subcatInput.value; 
-    debugger;
-    this.props.onSubcatAdd(id, subcatName);
-  }
-
-  render(){
-    return(
-      <li key={this.props.id}>
-        {this.props.name}
+        <li key={props.id}>
+        {props.name}
         <span className="controls"> 
 
-          <i className="fa fa-plus" aria-hidden="true" onClick={this.onEditTurnedOn}></i>
+          <i className="fa fa-plus" aria-hidden="true" onClick={()=> props.onSaveCat(props.id)}></i>
           <i className="fa fa-pencil" aria-hidden="true"></i>
-          <i className="fa fa-trash-o" aria-hidden="true" onClick={ () => this.props.onCatDelete(this.props.id)} ></i>
+          <i className="fa fa-trash-o" aria-hidden="true" onClick={ () => props.onCatDelete(props.id)} ></i>
 
         </span> 
-         {  this.props.children.length > 0 &&
-          <CategoryList list={this.props.children} onCatDelete={() => this.props.onCatDelete(this.props.children.id)} onSubcatAdd={() => this.props.onSubcatAdd(this.props.children.id)} />  
-        }              
-       {
-          this.state.isEditing &&
-          <div>
-            <input type="text" ref={(input) => { this.subcatInput = input; }} />
-            <Btn onButtonClicked={()=> this.onEditTurnedOff( this.props.id)} />
-          </div>
-         }
+        {
+          props.children.length > 0 &&
+          <CategoryList parent={props.id} list={ props.list} onCatDelete={() => props.onCatDelete(props.id) } onSubcatAdd={() =>props.onSaveCat(props.id)}/>
+        }
+       
       </li>
-    )
-  }
-
-
-}
-
-// const Category = ({ id, name, desc, children,inEditMode, onCatDelete, onSubcatAdd }) => (
-
-//       <li key={id}>
-//         {name}
-//         <span className="controls"> 
-
-//           <i className="fa fa-plus" aria-hidden="true" onClick={()=> inEditMode = !inEditMode}></i>
-//           <i className="fa fa-pencil" aria-hidden="true"></i>
-//           <i className="fa fa-trash-o" aria-hidden="true" onClick={ () => onCatDelete(id)} ></i>
-
-//         </span> 
-//         {
-//           children.length > 0 &&
-//           <CategoryList list={children} onCatDelete={() =>onCatDelete(children.id)} />  
-//         }              
-//         {
-//           inEditMode &&
-//           <form>
-//             <Textbox onTextAdded = {this.onTypeText} value={this.state.newcat} inputRef={(input) => { this.catInput = input; }} />
-//             <Btn onButtonClicked={() => onSubcatAdd(id)} />
-//           </form>
-//         }
-//       </li>
-//   );
+      
+  );
 
 
 export default App;
